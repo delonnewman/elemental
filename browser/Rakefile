@@ -1,0 +1,18 @@
+desc 'Build opal runtime files'
+task runtime: %w[vendor/opal/runtime.js vendor/opal/browser.js]
+
+file 'vendor/opal' do |t|
+  mkdir_p t.name
+end
+
+file 'vendor/opal/runtime.js' => %w[vendor/opal] do |t|
+  sh "opal-build opal -o #{t.name}"
+end
+
+file 'vendor/opal/browser.js' => %w[vendor/opal] do |t|
+  sh "opal-build -r opal-browser browser -o #{t.name}"
+end
+
+task :server do
+  sh 'ruby -run -e httpd .'
+end
